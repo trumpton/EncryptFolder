@@ -6,6 +6,9 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include "version.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -161,6 +164,7 @@ bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, boo
                 }
             }
         }
+
         if (isroot) ui->progressBar->setValue(++index) ;
         qApp->processEvents() ;
     }
@@ -287,4 +291,9 @@ void MainWindow::log(QString message, bool initialise)
     if (!file.open(initialise?QIODevice::WriteOnly:QIODevice::Append)) return ;
     file.write(message.toLatin1()) ;
     file.close() ;
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::warning(this, QString("About Encrypt Folder"), QString("This is version " BUILDVERSION " (" BUILDDATE ") of Encrypt Folder, and was built on   " COMPILEDATE), QMessageBox::Ok) ;
 }

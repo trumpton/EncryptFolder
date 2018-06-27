@@ -32,7 +32,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     ../Lib/aes.h \
-    ../Lib/encryption.h
+    ../Lib/encryption.h \
+    version.h
 
 FORMS += \
         mainwindow.ui \

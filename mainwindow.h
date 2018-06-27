@@ -26,6 +26,8 @@ private slots:
 
     void on_plaintext_lineEdit_textChanged(const QString &arg1);
 
+    void on_actionAbout_triggered();
+
 private:
     bool doabort ;
     Encryption *enc ;
