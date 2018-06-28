@@ -27,14 +27,17 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     ../Lib/aes.cpp \
-    ../Lib/encryption.cpp
+    ../Lib/encryption.cpp \
+    reportform.cpp
 
 HEADERS += \
         mainwindow.h \
     ../Lib/aes.h \
     ../Lib/encryption.h \
-    version.h
+    version.h \
+    reportform.h
 
 FORMS += \
         mainwindow.ui \
-    ../Lib/encryption.ui
+    ../Lib/encryption.ui \
+    reportform.ui

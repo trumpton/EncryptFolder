@@ -9,6 +9,9 @@
 #include <QMessageBox>
 
 #include "version.h"
+#include "reportform.h"
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -66,12 +69,17 @@ void MainWindow::on_start_pushButton_clicked()
     }
 
     if (enc->loggedIn()) {
+        bool overwrite = ui->overwrite_checkBox->isChecked() ;
         log(QString(encrypt?"Encrypting ...\n":"Decrypting ...\n"), true) ;
-        if (!processFolder(path, ptext, ctext, hierarchical, encrypt, true)) {
+        if (!processFolder(path, ptext, ctext, hierarchical, encrypt, overwrite, true)) {
             // Error processing data
         }
+
     }
 
+    ReportForm form ;
+    form.setContents(path + "/encryptfolder.log") ;
+    form.exec() ;
 }
 
 bool MainWindow::fileNameMatch(QString f1, QString f2)
@@ -83,7 +91,7 @@ bool MainWindow::fileNameMatch(QString f1, QString f2)
 #endif
 }
 
-bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, bool hierarchical, bool encrypt, bool isroot)
+bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, bool hierarchical, bool encrypt, bool overwrite, bool isroot)
 {
     QDir dir(folder);
     if (!dir.exists()) {
@@ -109,14 +117,14 @@ bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, boo
             if (doabort) {
                 return false ;
             }
-            if (!processFolder(sub_path, ptext, ctext, hierarchical, encrypt, false)) {
+            if (!processFolder(sub_path, ptext, ctext, hierarchical, encrypt, overwrite, false)) {
                 return false ;
             }
             if (isroot) ui->progressBar->setValue(++index) ;
         }
     }
 
-    log(QString("Processing folder: ") + folder + QString(".\n")) ;
+    log(QString("\nProcessing folder: ") + folder + QString(".\n")) ;
 
     QStringList files = dir.entryList(QDir::Files) ;
     foreach (QString f, files) {
@@ -136,13 +144,19 @@ bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, boo
             if (fileNameMatch(file_ext, ptext)) {
                 // Do Encryption
                 QByteArray data ;
-                log(QString("  Encrypting: ") + file_base + QString(".") + ptext) ;
+                log(QString("    Encrypting: ") + file_base + QString(".") + ptext) ;
                 if (loadPlain(file_base + QString(".") + ptext, data)) {
                     ui->statusBar->showMessage(file_base) ;
-                    if (!saveEnc(file_base + QString(".") + ctext, data)) {
-                        log(QString(": ERROR failed to save\n")) ;
-                    } else {
+                    switch (saveEnc(file_base + QString(".") + ctext, data, overwrite)) {
+                    case SaveOk:
                         log(QString(": OK\n")) ;
+                        break ;
+                    case SaveFailed:
+                        log(QString(": ERROR failed to save\n")) ;
+                        break ;
+                    case FileExists:
+                        log(QString(": WARNING skipped as file exists\n")) ;
+                        break ;
                     }
                 } else {
                     log(QString(": ERROR failed to load\n")) ;
@@ -151,13 +165,19 @@ bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, boo
         } else {
             if (fileNameMatch(file_ext, ctext)) {
                 QByteArray data ;
-                log(QString("  Decrypting: ") + file_base + QString(".") + ctext) ;
+                log(QString("    Decrypting: ") + file_base + QString(".") + ctext) ;
                 if (loadEnc(file_base + QString(".") + ctext, data)) {
                     ui->statusBar->showMessage(file_base) ;
-                    if (!savePlain(file_base + QString(".") + ptext, data)) {
-                        log(QString(": ERROR failed to save\n")) ;
-                    } else {
+                    switch (savePlain(file_base + QString(".") + ptext, data, overwrite)) {
+                    case SaveOk:
                         log(QString(": OK\n")) ;
+                        break ;
+                    case SaveFailed:
+                        log(QString(": ERROR failed to save\n")) ;
+                        break ;
+                    case FileExists:
+                        log(QString(": WARNING skipped as file exists\n")) ;
+                        break ;
                     }
                 } else {
                     log(QString(": ERROR failed to load\n")) ;
@@ -208,14 +228,14 @@ bool MainWindow::loadEnc(QString filename, QByteArray& contents)
     }
 }
 
-bool MainWindow::saveEnc(QString filename, QByteArray contents)
+SaveStatus MainWindow::saveEnc(QString filename, QByteArray contents, bool overwrite)
 {
     QFile file(filename) ;
-    if (file.exists()) return true ;
+    if (file.exists() && !overwrite) return FileExists ;
     if (!enc->save(filename, contents)) {
-        return false ;
+        return SaveFailed ;
     } else {
-        return true ;
+        return SaveOk ;
     }
 }
 
@@ -238,20 +258,20 @@ bool MainWindow::loadPlain(QString filename, QByteArray& contents)
 
 }
 
-bool MainWindow::savePlain(QString filename, QByteArray contents)
+SaveStatus MainWindow::savePlain(QString filename, QByteArray contents, bool overwrite)
 {
     QFile file(filename) ;
-    if (file.exists()) return true ;
+    if (file.exists() && !overwrite) return FileExists ;
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return false;
+        return SaveFailed;
     QTextStream out(&file);
     out << contents ;
     if (file.flush()) {
         file.close() ;
-        return true ;
+        return SaveOk ;
     } else {
         file.close() ;
-        return false ;
+        return SaveFailed ;
     }
 }
 

@@ -124,6 +124,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="overwrite_checkBox">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Overwrite Files</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
