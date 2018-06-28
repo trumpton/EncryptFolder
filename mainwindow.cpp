@@ -85,7 +85,7 @@ void MainWindow::on_start_pushButton_clicked()
 bool MainWindow::fileNameMatch(QString f1, QString f2)
 {
 #ifdef WIN32
-    return (f1.tolower().compare(f2.tolower())==0) ;
+    return (f1.toLower().compare(f2.toLower())==0) ;
 #else
     return (f1.compare(f2)==0) ;
 #endif
