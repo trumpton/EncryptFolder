@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->progressBar->setValue(0) ;
     enc = new Encryption(QString("trumpton.uk"), QString("TextFileEncryption")) ;
-    refreshMenu() ;
+    connect(ui->menuKeyandPassword, SIGNAL(aboutToShow()), this, SLOT(refreshMenu())) ;
+    refreshMenu();
 }
 
 
@@ -66,6 +67,7 @@ void MainWindow::on_start_pushButton_clicked()
 
     if (!enc->loggedIn()) {
         enc->login() ;
+        refreshMenu();
     }
 
     if (enc->loggedIn()) {
@@ -199,11 +201,11 @@ bool MainWindow::processFolder(QString folder, QString ptext, QString ctext, boo
 void MainWindow::refreshMenu()
 {
     if (enc->loggedIn()) {
-           ui->actionLogin->setEnabled(false) ;
-           ui->actionSetKey->setEnabled(false) ;
-           ui->actionLogout->setEnabled(true);
+        ui->actionChangePassword->setEnabled(false) ;
+        ui->actionSetKey->setEnabled(false) ;
+        ui->actionLogout->setEnabled(true);
     } else {
-        ui->actionLogin->setEnabled(true) ;
+        ui->actionChangePassword->setEnabled(true) ;
         ui->actionSetKey->setEnabled(true) ;
         ui->actionLogout->setEnabled(false);
     }
@@ -278,20 +280,18 @@ SaveStatus MainWindow::savePlain(QString filename, QByteArray contents, bool ove
 void MainWindow::on_actionLogout_triggered()
 {
     enc->logout() ;
-    refreshMenu() ;
 }
 
 void MainWindow::on_actionSetKey_triggered()
 {
     enc->setKey();
-    refreshMenu() ;
 }
 
-void MainWindow::on_actionLogin_triggered()
+void MainWindow::on_actionChangePassword_triggered()
 {
-    enc->login() ;
-    refreshMenu() ;
+    enc->changePassword();
 }
+
 
 void MainWindow::on_ciphertext_lineEdit_textChanged(const QString &arg1)
 {
@@ -317,3 +317,4 @@ void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::warning(this, QString("About Encrypt Folder"), QString("This is version " BUILDVERSION " (" BUILDDATE ") of Encrypt Folder, and was built on   " COMPILEDATE), QMessageBox::Ok) ;
 }
+

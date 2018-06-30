@@ -30,12 +30,12 @@ private slots:
     void on_start_pushButton_clicked();
     void on_actionLogout_triggered();
     void on_actionSetKey_triggered();
-    void on_actionLogin_triggered();
+    void on_actionChangePassword_triggered();
     void on_ciphertext_lineEdit_textChanged(const QString &arg1);
-
     void on_plaintext_lineEdit_textChanged(const QString &arg1);
-
     void on_actionAbout_triggered();
+    void refreshMenu() ;
+
 
 private:
     bool doabort ;
@@ -44,7 +44,6 @@ private:
 
 private:
     void log(QString message, bool initialise=false) ;
-    void refreshMenu() ;
     bool fileNameMatch(QString f1, QString f2) ;
     bool processFolder(QString folder, QString ptext, QString ctext, bool hierarchical, bool encrypt, bool overwrite, bool isroot) ;
     bool loadEnc(QString filename, QByteArray& contents) ;
