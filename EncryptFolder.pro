@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,16 +28,23 @@ SOURCES += \
         mainwindow.cpp \
     ../Lib/aes.cpp \
     ../Lib/encryption.cpp \
-    reportform.cpp
+    reportform.cpp \
+    ../Lib/safelineedit.cpp \
+    ../Lib/alertsound.cpp
 
 HEADERS += \
         mainwindow.h \
     ../Lib/aes.h \
     ../Lib/encryption.h \
     version.h \
-    reportform.h
+    reportform.h \
+    ../Lib/safelineedit.h \
+    ../Lib/alertsound.h
 
 FORMS += \
         mainwindow.ui \
     ../Lib/encryption.ui \
     reportform.ui
+
+RESOURCES += \
+    ../Lib/sounds.qrc
