@@ -11,6 +11,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EncryptFolder
 TEMPLATE = app
 
+# Include Git Hash / Revision Details
+# Uncomment NOGIT if Git not used.
+#DEFINES += NOGIT
+GITHASH = \\\"$$system(git --git-dir=\"$$PWD/.git\" describe --always --tags)\\\"
+LIBHASH = \\\"$$system(git --git-dir=\"$$PWD/../Lib/.git\" describe --always --tags)\\\"
+DEFINES += GITHASH=$$GITHASH
+DEFINES += LIBHASH=$$LIBHASH
+DEFINES += PWD=\\\"$$PWD\\\"
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -30,7 +39,10 @@ SOURCES += \
     ../Lib/encryption.cpp \
     reportform.cpp \
     ../Lib/safelineedit.cpp \
-    ../Lib/alertsound.cpp
+    ../Lib/alertsound.cpp \
+    ../Lib/supportfunctions.cpp \
+    ../Lib/warningyesno.cpp \
+    ../Lib/warningok.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,12 +51,17 @@ HEADERS += \
     version.h \
     reportform.h \
     ../Lib/safelineedit.h \
-    ../Lib/alertsound.h
+    ../Lib/alertsound.h \
+    ../Lib/supportfunctions.h \
+    ../Lib/warningyesno.h \
+    ../Lib/warningok.h
 
 FORMS += \
         mainwindow.ui \
     ../Lib/encryption.ui \
-    reportform.ui
+    reportform.ui \
+    ../Lib/warningyesno.ui \
+    ../Lib/warningok.ui
 
 RESOURCES += \
     ../Lib/sounds.qrc

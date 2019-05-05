@@ -10,8 +10,7 @@
 
 #include "version.h"
 #include "reportform.h"
-
-
+#include "../Lib/supportfunctions.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -315,6 +314,12 @@ void MainWindow::log(QString message, bool initialise)
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::warning(this, QString("About Encrypt Folder"), QString("This is version " BUILDVERSION " (" BUILDDATE ") of Encrypt Folder, and was built on   " COMPILEDATE), QMessageBox::Ok) ;
+    QString text =
+    QString("EncryptFolder Release %1.\n").arg(BUILDVERSION) +
+    QString("It was built on: %1.\n").arg(buildDate()) +
+    QString("\EncryptFolder Repository Version: %1.\n").arg(appHash()) +
+    QString("Library Repository Version: %1.\n").arg(libVersion()) ;
+
+    QMessageBox::warning(this, QString("About Encrypt Folder"), text, QMessageBox::Ok) ;
 }
 
