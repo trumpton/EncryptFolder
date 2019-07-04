@@ -8,7 +8,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "version.h"
 #include "reportform.h"
 #include "../Lib/supportfunctions.h"
 
@@ -315,10 +314,10 @@ void MainWindow::log(QString message, bool initialise)
 void MainWindow::on_actionAbout_triggered()
 {
     QString text =
-    QString("EncryptFolder Release %1.\n").arg(BUILDVERSION) +
-    QString("It was built on: %1.\n").arg(buildDate()) +
-    QString("\EncryptFolder Repository Version: %1.\n").arg(appHash()) +
-    QString("Library Repository Version: %1.\n").arg(libVersion()) ;
+    QString("EncryptFolder Version: %1.\n").arg(appHash()) +
+    QString("Library Version: %1.\n").arg(libVersion()) +
+    QString("It was built on: %1.\n").arg(buildDate()) ;
+
 
     QMessageBox::warning(this, QString("About Encrypt Folder"), text, QMessageBox::Ok) ;
 }
